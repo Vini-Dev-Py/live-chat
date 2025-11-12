@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plataforma de Atendimento - Live Chat</title>
+  <link rel="stylesheet" href="/agent/styles.css">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1>💬 Live Chat</h1>
+        <p>Plataforma de Atendimento</p>
+      </div>
+      
+      <div class="company-selector">
+        <label>Selecione a Empresa:</label>
+        <select id="company-select">
+          <option value="company-1">Empresa 1</option>
+          <option value="company-2">Empresa 2</option>
+        </select>
+      </div>
+      
+      <div class="agent-info">
+        <label>Seu Nome:</label>
+        <input type="text" id="agent-name" placeholder="Nome do Atendente" value="Atendente">
+      </div>
+      
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Tickets Abertos</div>
+          <div class="stat-value" id="open-tickets">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Total de Tickets</div>
+          <div class="stat-value" id="total-tickets">0</div>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- Main content -->
+    <main class="main-content">
+      <!-- Tickets list -->
+      <div class="tickets-panel">
+        <div class="panel-header">
+          <h2>Tickets</h2>
+          <button id="refresh-tickets" class="btn-refresh">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+            Atualizar
+          </button>
+        </div>
+        
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-status="all">Todos</button>
+          <button class="filter-tab" data-status="open">Abertos</button>
+          <button class="filter-tab" data-status="closed">Fechados</button>
+        </div>
+        
+        <div id="tickets-list" class="tickets-list">
+          <div class="empty-state">
+            <p>Nenhum ticket encontrado</p>
+            <small>Aguardando novos atendimentos...</small>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Chat panel -->
+      <div class="chat-panel">
+        <div id="no-ticket-selected" class="empty-state-chat">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <h3>Selecione um ticket</h3>
+          <p>Escolha um ticket da lista para iniciar o atendimento</p>
+        </div>
+        
+        <div id="ticket-chat" class="ticket-chat" style="display: none;">
+          <div class="chat-header">
+            <div class="chat-header-info">
+              <h3 id="chat-customer-name">Cliente</h3>
+              <span id="chat-ticket-id" class="ticket-id">#123456</span>
+            </div>
+            <div class="chat-header-actions">
+              <select id="ticket-status" class="status-select">
+                <option value="open">Aberto</option>
+                <option value="closed">Fechado</option>
+              </select>
+            </div>
+          </div>
+          
+          <div id="chat-messages" class="chat-messages"></div>
+          
+          <div id="typing-indicator" class="typing-indicator" style="display: none;">
+            <span></span><span></span><span></span>
+            <span class="typing-text">Cliente está digitando...</span>
+          </div>
+          
+          <form id="message-form" class="message-form">
+            <input type="text" id="message-input" placeholder="Digite sua mensagem..." autocomplete="off">
+            <button type="submit">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+  
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/agent/script.js"></script>
+</body>
+</html>

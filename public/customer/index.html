@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site de Demonstração - Live Chat</title>
+  <link rel="stylesheet" href="/customer/styles.css">
+</head>
+<body>
+  <!-- Main website content -->
+  <div class="website-content">
+    <header>
+      <h1>Bem-vindo ao Nosso Site</h1>
+      <p>Esta é uma demonstração de site com chat ao vivo</p>
+    </header>
+    
+    <main>
+      <section class="hero">
+        <h2>Precisa de ajuda?</h2>
+        <p>Clique no botão de chat no canto inferior direito para falar conosco!</p>
+      </section>
+      
+      <section class="features">
+        <div class="feature">
+          <h3>🚀 Rápido</h3>
+          <p>Resposta em tempo real</p>
+        </div>
+        <div class="feature">
+          <h3>💬 Fácil</h3>
+          <p>Chat simples e intuitivo</p>
+        </div>
+        <div class="feature">
+          <h3>🔒 Seguro</h3>
+          <p>Dados isolados por empresa</p>
+        </div>
+      </section>
+      
+      <section class="company-selector">
+        <h3>Selecione uma empresa para testar:</h3>
+        <div class="company-buttons">
+          <button onclick="setCompany('company-1')" class="company-btn">Empresa 1</button>
+          <button onclick="setCompany('company-2')" class="company-btn">Empresa 2</button>
+        </div>
+        <p id="selected-company">Empresa selecionada: <strong>Empresa 1</strong></p>
+      </section>
+    </main>
+  </div>
+  
+  <!-- Floating chat button -->
+  <button id="chat-toggle" class="chat-toggle">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </svg>
+  </button>
+  
+  <!-- Chat widget -->
+  <div id="chat-widget" class="chat-widget">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <h3>Chat ao Vivo</h3>
+        <span class="chat-status" id="chat-status">Offline</span>
+      </div>
+      <button id="chat-close" class="chat-close">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Welcome screen -->
+    <div id="chat-welcome" class="chat-welcome">
+      <h3>Olá! 👋</h3>
+      <p>Como podemos ajudar você hoje?</p>
+      <form id="start-chat-form">
+        <input type="text" id="customer-name" placeholder="Seu nome" required>
+        <button type="submit">Iniciar Chat</button>
+      </form>
+    </div>
+    
+    <!-- Chat conversation -->
+    <div id="chat-conversation" class="chat-conversation" style="display: none;">
+      <div id="chat-messages" class="chat-messages"></div>
+      <div id="typing-indicator" class="typing-indicator" style="display: none;">
+        <span></span><span></span><span></span>
+      </div>
+      <form id="message-form" class="message-form">
+        <input type="text" id="message-input" placeholder="Digite sua mensagem..." autocomplete="off">
+        <button type="submit">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+  
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/customer/script.js"></script>
+</body>
+</html>

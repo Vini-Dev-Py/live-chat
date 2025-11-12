@@ -2,10 +2,11 @@
   "name": "live-chat",
   "version": "1.0.0",
   "description": "Live Chat Monolith - Multi-company chat application with customer widget and agent dashboard",
-  "main": "src/server/index.js",
+  "main": "dist/server/index.js",
   "scripts": {
-    "start": "node src/server/index.js",
-    "dev": "node src/server/index.js",
+    "build": "tsc",
+    "start": "npm run build && node dist/server/index.js",
+    "dev": "nodemon --watch src --ext ts --exec ts-node src/server/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,5 +17,13 @@
     "multer": "^2.0.2",
     "socket.io": "^4.8.1",
     "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.5",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^24.10.1",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }

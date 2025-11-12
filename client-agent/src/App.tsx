@@ -84,6 +84,11 @@ function App() {
       console.log('WebSocket disconnected');
     });
 
+    socket.on('ticket:created', () => {
+      console.log('New ticket created - reloading tickets');
+      loadTickets();
+    });
+
     socket.on('ticket:updated', () => {
       loadTickets();
     });

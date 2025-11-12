@@ -28,3 +28,7 @@ logs/
 # Build outputs
 dist/
 build/
+
+# Uploads
+public/uploads/*
+!public/uploads/.gitkeep

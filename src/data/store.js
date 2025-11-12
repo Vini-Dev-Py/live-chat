@@ -106,7 +106,7 @@ class DataStore {
   }
   
   // Message methods
-  createMessage(ticketId, sender, senderType, content) {
+  createMessage(ticketId, sender, senderType, content, mediaType = null, mediaUrl = null) {
     const messageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const message = {
       id: messageId,
@@ -114,6 +114,8 @@ class DataStore {
       sender,
       senderType, // 'customer' or 'agent'
       content,
+      mediaType, // 'image', 'video', or null
+      mediaUrl, // URL to media file or null
       timestamp: new Date().toISOString()
     };
     

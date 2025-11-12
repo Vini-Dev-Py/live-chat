@@ -7,11 +7,39 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
+const multer = require('multer');
 const dataStore = require('../data/store');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, '../../public/uploads'));
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept images and videos
+    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/webm', 'video/ogg'];
+    if (allowedMimes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only images and videos are allowed.'));
+    }
+  }
+});
 
 // Middleware
 app.use(express.json());
@@ -122,6 +150,26 @@ app.put('/api/tickets/:companyId/:ticketId/status', (req, res) => {
   res.json({ ticket: updatedTicket });
 });
 
+// Upload file endpoint
+app.post('/api/upload', upload.single('file'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  
+  const fileUrl = `/uploads/${req.file.filename}`;
+  const fileType = req.file.mimetype.startsWith('image/') ? 'image' : 'video';
+  
+  res.json({
+    success: true,
+    file: {
+      url: fileUrl,
+      type: fileType,
+      filename: req.file.originalname,
+      size: req.file.size
+    }
+  });
+});
+
 // ============================================
 // WEBSOCKET HANDLERS
 // ============================================
@@ -166,7 +214,7 @@ io.on('connection', (socket) => {
   });
   
   // Send a message
-  socket.on('message:send', ({ ticketId, sender, senderType, content }) => {
+  socket.on('message:send', ({ ticketId, sender, senderType, content, mediaType, mediaUrl }) => {
     const connection = dataStore.getConnection(socket.id);
     
     if (!connection) {
@@ -181,7 +229,7 @@ io.on('connection', (socket) => {
     }
     
     // Create the message
-    const message = dataStore.createMessage(ticketId, sender, senderType, content);
+    const message = dataStore.createMessage(ticketId, sender, senderType, content, mediaType, mediaUrl);
     
     // Broadcast to all users in the ticket room
     io.to(`ticket-${ticketId}`).emit('message:received', { message });

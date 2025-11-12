@@ -33,7 +33,7 @@ interface Ticket {
   updatedAt: string;
 }
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 function App() {
   const [currentCompanyId, setCurrentCompanyId] = useState('company-1');

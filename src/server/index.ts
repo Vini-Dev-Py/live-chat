@@ -98,6 +98,10 @@ app.post('/api/tickets', (req: Request, res: Response) => {
   }
   
   const ticket = dataStore.createTicket(companyId, customerId, customerName);
+  
+  // Notify all agents in the company about the new ticket
+  io.to(`company-${companyId}`).emit('ticket:created', { ticket });
+  
   res.json({ ticket });
 });
 
@@ -198,8 +202,27 @@ interface TypingData {
   userName: string;
 }
 
+interface JoinCompanyData {
+  companyId: string;
+}
+
 io.on('connection', (socket: Socket) => {
   console.log('New WebSocket connection:', socket.id);
+  
+  // Join a company room (for agents to receive notifications)
+  socket.on('join-company', (data: JoinCompanyData) => {
+    const { companyId } = data;
+    const company = dataStore.getCompany(companyId);
+    
+    if (!company) {
+      socket.emit('error', { message: 'Company not found' });
+      return;
+    }
+    
+    // Join the company room
+    socket.join(`company-${companyId}`);
+    console.log(`Agent joined company room: ${companyId}`);
+  });
   
   // Join a ticket room
   socket.on('join-ticket', (data: JoinTicketData) => {

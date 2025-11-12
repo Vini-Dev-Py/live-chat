@@ -22,6 +22,11 @@ const messageInput = document.getElementById('message-input');
 const chatMessages = document.getElementById('chat-messages');
 const chatStatus = document.getElementById('chat-status');
 const typingIndicator = document.getElementById('typing-indicator');
+const attachButton = document.getElementById('attach-button');
+const fileInput = document.getElementById('file-input');
+const emojiButton = document.getElementById('emoji-button');
+const emojiPicker = document.getElementById('emoji-picker');
+const dropZone = document.getElementById('drop-zone');
 
 // Toggle chat widget
 chatToggle.addEventListener('click', () => {
@@ -166,6 +171,135 @@ messageForm.addEventListener('submit', (e) => {
   stopTyping();
 });
 
+// Attach button handler
+attachButton.addEventListener('click', () => {
+  fileInput.click();
+});
+
+// File input handler
+fileInput.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  await uploadFile(file);
+  fileInput.value = '';
+});
+
+// Emoji button handler
+emojiButton.addEventListener('click', (e) => {
+  e.stopPropagation();
+  emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'block' : 'none';
+});
+
+// Close emoji picker when clicking outside
+document.addEventListener('click', (e) => {
+  if (!emojiPicker.contains(e.target) && e.target !== emojiButton) {
+    emojiPicker.style.display = 'none';
+  }
+});
+
+// Initialize emoji picker
+function initEmojiPicker() {
+  const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '🥲', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🥶', '😶‍🌫️', '🥴', '😵', '🤯', '🤠', '🥳', '😎', '🤓', '🧐', '😕', '😟', '🙁', '😮', '😯', '😲', '😳', '🥺', '😦', '😧', '😨', '😰', '😥', '😢', '😭', '😱', '😖', '😣', '😞', '😓', '😩', '😫', '🥱', '😤', '😡', '😠', '🤬', '👍', '👎', '👏', '🙌', '👐', '🤝', '🙏', '✌️', '🤞', '🤟', '🤘', '🤙', '👈', '👉', '👆', '👇', '☝️', '✋', '🤚', '🖐️', '🖖', '👋', '🤙', '💪', '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❤️‍🔥', '❤️‍🩹', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '💟', '☮️', '✝️', '☪️', '🕉️', '☸️', '✡️', '🔯', '🕎', '☯️', '☦️', '🛐'];
+  
+  const grid = emojiPicker.querySelector('.emoji-grid');
+  grid.innerHTML = '';
+  
+  emojis.forEach(emoji => {
+    const span = document.createElement('span');
+    span.className = 'emoji-item';
+    span.textContent = emoji;
+    span.addEventListener('click', () => {
+      messageInput.value += emoji;
+      messageInput.focus();
+      emojiPicker.style.display = 'none';
+    });
+    grid.appendChild(span);
+  });
+}
+
+// Drag and drop handlers
+chatConversation.addEventListener('dragenter', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  dropZone.style.display = 'flex';
+});
+
+dropZone.addEventListener('dragleave', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (e.target === dropZone) {
+    dropZone.style.display = 'none';
+  }
+});
+
+dropZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+});
+
+dropZone.addEventListener('drop', async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  dropZone.style.display = 'none';
+  
+  const files = e.dataTransfer.files;
+  if (files.length > 0) {
+    await uploadFile(files[0]);
+  }
+});
+
+// Upload file function
+async function uploadFile(file) {
+  // Validate file type
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/webm', 'video/ogg'];
+  if (!allowedTypes.includes(file.type)) {
+    alert('Apenas imagens e vídeos são permitidos.');
+    return;
+  }
+  
+  // Validate file size (10MB)
+  if (file.size > 10 * 1024 * 1024) {
+    alert('O arquivo deve ter no máximo 10MB.');
+    return;
+  }
+  
+  // Show uploading message
+  const uploadingMsg = addSystemMessage('Enviando arquivo...');
+  
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (!response.ok) throw new Error('Upload failed');
+    
+    const data = await response.json();
+    
+    // Remove uploading message
+    uploadingMsg.remove();
+    
+    // Send media message via WebSocket
+    socket.emit('message:send', {
+      ticketId: currentTicketId,
+      sender: customerName,
+      senderType: 'customer',
+      content: file.name,
+      mediaType: data.file.type,
+      mediaUrl: data.file.url
+    });
+    
+  } catch (error) {
+    console.error('Upload error:', error);
+    uploadingMsg.remove();
+    alert('Erro ao enviar arquivo. Tente novamente.');
+  }
+}
+
 // Typing indicators
 messageInput.addEventListener('input', () => {
   if (!socket || !socket.connected) return;
@@ -204,9 +338,18 @@ function addMessage(message) {
     minute: '2-digit'
   });
   
+  let contentHtml = '';
+  if (message.mediaType === 'image') {
+    contentHtml = `<img src="${message.mediaUrl}" alt="${escapeHtml(message.content)}" class="message-media message-image" onclick="window.open('${message.mediaUrl}', '_blank')">`;
+  } else if (message.mediaType === 'video') {
+    contentHtml = `<video src="${message.mediaUrl}" controls class="message-media message-video"></video>`;
+  } else {
+    contentHtml = `<div class="message-content">${escapeHtml(message.content)}</div>`;
+  }
+  
   messageDiv.innerHTML = `
     <div class="message-sender">${message.sender}</div>
-    <div class="message-content">${escapeHtml(message.content)}</div>
+    ${contentHtml}
     <div class="message-time">${time}</div>
   `;
   
@@ -222,6 +365,8 @@ function addSystemMessage(text) {
   
   chatMessages.appendChild(messageDiv);
   chatMessages.scrollTop = chatMessages.scrollHeight;
+  
+  return messageDiv;
 }
 
 // Update status
@@ -256,3 +401,4 @@ function escapeHtml(text) {
 
 // Initialize
 updateStatus('offline');
+initEmojiPicker();

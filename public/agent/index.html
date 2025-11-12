@@ -101,14 +101,42 @@
           </div>
           
           <form id="message-form" class="message-form">
+            <button type="button" id="attach-button" class="attach-button" title="Anexar foto ou vídeo">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+            <input type="file" id="file-input" accept="image/*,video/*" style="display: none;">
             <input type="text" id="message-input" placeholder="Digite sua mensagem..." autocomplete="off">
-            <button type="submit">
+            <button type="button" id="emoji-button" class="emoji-button" title="Adicionar emoji">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+              </svg>
+            </button>
+            <button type="submit" id="send-button">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="22" y1="2" x2="11" y2="13"></line>
                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
               </svg>
             </button>
           </form>
+          <div id="emoji-picker" class="emoji-picker" style="display: none;">
+            <div class="emoji-grid"></div>
+          </div>
+          <div id="drop-zone" class="drop-zone" style="display: none;">
+            <div class="drop-zone-content">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <p>Solte a foto ou vídeo aqui</p>
+            </div>
+          </div>
         </div>
       </div>
     </main>

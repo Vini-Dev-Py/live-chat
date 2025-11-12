@@ -51,10 +51,12 @@ live-chat/
 - Multer (upload de arquivos)
 
 ### Frontend
-- React 18
+- React 19
 - TypeScript
+- Vite (build tool)
 - Tailwind CSS v3
 - Socket.io Client
+- Phosphor Icons (biblioteca de ícones)
 
 ## 💻 Instalação
 
@@ -90,15 +92,19 @@ Para desenvolvimento, você pode executar cada aplicação separadamente:
 npm run dev
 ```
 
-**Frontend do Cliente (porta 3001):**
+**Frontend do Cliente (porta 3001) com Vite:**
 ```bash
 npm run dev:customer
+# ou diretamente: cd client-customer && npm run dev
 ```
 
-**Frontend do Agente (porta 3002):**
+**Frontend do Agente (porta 3002) com Vite:**
 ```bash
 npm run dev:agent
+# ou diretamente: cd client-agent && npm run dev
 ```
+
+> **Nota**: O Vite oferece desenvolvimento mais rápido com Hot Module Replacement (HMR) instantâneo.
 
 ### Produção
 
@@ -183,22 +189,25 @@ Todos os dados são armazenados em memória usando estruturas TypeScript:
 
 ## 🎨 Interface
 
-### Widget do Cliente (React + TypeScript + Tailwind CSS)
+### Widget do Cliente (React + TypeScript + Vite + Tailwind CSS)
 
 - Design moderno e responsivo com Tailwind CSS
-- Botão flutuante no canto inferior direito
-- Animações suaves
+- Ícones elegantes com Phosphor Icons
+- Botão flutuante no canto inferior direito com animação
+- Animações suaves (fade-in, slide-up, bounce)
+- Transições fluidas em hover e interações
 - Suporte para mobile
 - Integração completa com Socket.IO para chat em tempo real
 
-### Dashboard do Agente (React + TypeScript + Tailwind CSS)
+### Dashboard do Agente (React + TypeScript + Vite + Tailwind CSS)
 
 - Lista de tickets com filtros (Todos/Abertos/Fechados)
 - Estatísticas em tempo real
-- Interface de chat completa
+- Interface de chat completa com ícones Phosphor
 - Gerenciamento de status de tickets
 - Atualização automática de novos tickets
 - Layout responsivo e moderno
+- Animações e transições suaves
 
 ## 🔒 Segurança
 

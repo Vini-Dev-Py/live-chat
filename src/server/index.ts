@@ -312,14 +312,25 @@ io.on('connection', (socket: Socket) => {
 // SERVE STATIC PAGES
 // ============================================
 
-// Customer site
+// Root redirects to customer
 app.get('/', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../../public/customer/index.html'));
+  res.redirect('/customer');
 });
 
-// Agent dashboard
-app.get('/agent', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../../public/agent/index.html'));
+// Serve customer React app static files
+app.use('/customer', express.static(path.join(__dirname, '../../client-customer/build')));
+
+// Serve agent React app static files
+app.use('/agent', express.static(path.join(__dirname, '../../client-agent/build')));
+
+// Customer app catch-all route for client-side routing
+app.get(/^\/customer/, (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, '../../client-customer/build/index.html'));
+});
+
+// Agent app catch-all route for client-side routing
+app.get(/^\/agent/, (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, '../../client-agent/build/index.html'));
 });
 
 // ============================================

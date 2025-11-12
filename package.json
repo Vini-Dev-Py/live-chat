@@ -4,9 +4,14 @@
   "description": "Live Chat Monolith - Multi-company chat application with customer widget and agent dashboard",
   "main": "dist/server/index.js",
   "scripts": {
-    "build": "tsc",
+    "build:backend": "tsc",
+    "build:customer": "cd client-customer && npm run build",
+    "build:agent": "cd client-agent && npm run build",
+    "build": "npm run build:backend && npm run build:customer && npm run build:agent",
     "start": "npm run build && node dist/server/index.js",
     "dev": "nodemon --watch src --ext ts --exec ts-node src/server/index.ts",
+    "dev:customer": "cd client-customer && npm start",
+    "dev:agent": "cd client-agent && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

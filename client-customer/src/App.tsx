@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, FormEvent } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { ChatCircle, X, PaperPlaneRight, Smiley, Plus, ArrowsClockwise } from 'phosphor-react';
 
 interface Message {
   id: string;
@@ -307,30 +308,37 @@ function App() {
       {/* Floating chat button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 w-16 h-16 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition flex items-center justify-center z-50"
+        className="fixed bottom-6 right-6 w-16 h-16 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 hover:scale-110 transition-all duration-300 ease-in-out flex items-center justify-center z-50 animate-bounce-slow"
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-        </svg>
+        <ChatCircle size={32} weight="fill" />
       </button>
 
       {/* Chat widget */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-96 h-[600px] bg-white rounded-lg shadow-2xl flex flex-col z-50">
+        <div className="fixed bottom-24 right-6 w-96 h-[600px] bg-white rounded-lg shadow-2xl flex flex-col z-50 animate-slide-up">
           {/* Chat header */}
           <div className="bg-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
             <div>
               <h3 className="font-bold text-lg">Chat ao Vivo</h3>
-              <span className="text-sm">{isConnected ? 'Online' : 'Offline'}</span>
+              <span className="text-sm flex items-center gap-1">
+                {isConnected ? (
+                  <>
+                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                    Online
+                  </>
+                ) : (
+                  <>
+                    <span className="w-2 h-2 bg-red-400 rounded-full"></span>
+                    Offline
+                  </>
+                )}
+              </span>
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="hover:bg-blue-700 p-1 rounded"
+              className="hover:bg-blue-700 p-1 rounded transition-colors"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
+              <X size={20} weight="bold" />
             </button>
           </div>
 
@@ -415,37 +423,29 @@ function App() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="p-2 hover:bg-gray-100 rounded"
+                  className="p-2 hover:bg-gray-100 rounded transition-colors"
                   title="Anexar foto ou vídeo"
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                  </svg>
+                  <Plus size={20} weight="bold" />
                 </button>
                 <input
                   type="text"
                   value={messageInput}
                   onChange={(e) => handleMessageInputChange(e.target.value)}
                   placeholder="Digite sua mensagem..."
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                 />
                 <div className="relative">
                   <button
                     type="button"
                     onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                    className="p-2 hover:bg-gray-100 rounded"
+                    className="p-2 hover:bg-gray-100 rounded transition-colors"
                     title="Adicionar emoji"
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                      <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                      <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                    </svg>
+                    <Smiley size={20} weight="bold" />
                   </button>
                   {showEmojiPicker && (
-                    <div className="absolute bottom-12 right-0 bg-white border rounded-lg shadow-lg p-2 w-64 max-h-48 overflow-y-auto">
+                    <div className="absolute bottom-12 right-0 bg-white border rounded-lg shadow-lg p-2 w-64 max-h-48 overflow-y-auto animate-fade-in">
                       <div className="grid grid-cols-8 gap-1">
                         {emojis.map((emoji, idx) => (
                           <button
@@ -455,7 +455,7 @@ function App() {
                               setMessageInput(prev => prev + emoji);
                               setShowEmojiPicker(false);
                             }}
-                            className="text-2xl hover:bg-gray-100 p-1 rounded"
+                            className="text-2xl hover:bg-gray-100 p-1 rounded transition-transform hover:scale-125"
                           >
                             {emoji}
                           </button>
@@ -466,12 +466,9 @@ function App() {
                 </div>
                 <button
                   type="submit"
-                  className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all hover:scale-105"
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                  </svg>
+                  <PaperPlaneRight size={20} weight="fill" />
                 </button>
               </form>
             </>

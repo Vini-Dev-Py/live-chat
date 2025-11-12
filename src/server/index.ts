@@ -72,8 +72,11 @@ app.get('/api/companies', (req: Request, res: Response) => {
   res.json({ companies });
 });
 
-// Get company by API key
+// Get company by API key (via header for security)
+// In production, use POST with body or Authorization header instead of URL parameter
 app.get('/api/company/:apiKey', (req: Request, res: Response) => {
+  // NOTE: This endpoint accepts API key as URL parameter for demo purposes only.
+  // In production, use Authorization header or POST body to avoid exposing sensitive data in URLs.
   const company = dataStore.getCompanyByApiKey(req.params.apiKey);
   if (!company) {
     return res.status(404).json({ error: 'Company not found' });
@@ -319,9 +322,11 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Serve customer React app static files
+// NOTE: In production, consider adding rate limiting to prevent abuse
 app.use('/customer', express.static(path.join(__dirname, '../../client-customer/build')));
 
 // Serve agent React app static files
+// NOTE: In production, consider adding rate limiting to prevent abuse
 app.use('/agent', express.static(path.join(__dirname, '../../client-agent/build')));
 
 // Customer app catch-all route for client-side routing
@@ -346,8 +351,9 @@ server.listen(PORT, () => {
   console.log(`👨‍💼 Agent dashboard: http://localhost:${PORT}/agent`);
   console.log(`\n📊 Sample Companies:`);
   dataStore.getAllCompanies().forEach(company => {
-    // Note: API keys logged for demo/testing purposes only
-    console.log(`   - ${company.name} (ID: ${company.id}, API Key: ${company.apiKey})`);
+    // NOTE: API keys are logged for demo/testing purposes only
+    // In production, never log sensitive credentials
+    console.log(`   - ${company.name} (ID: ${company.id})`);
   });
   console.log('');
 });

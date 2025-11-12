@@ -43,7 +43,8 @@ const upload = multer({
 
 // Middleware
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../../public')));
+// Serve uploads directory
+app.use('/uploads', express.static(path.join(__dirname, '../../public/uploads')));
 
 // CORS for development
 app.use((req: Request, res: Response, next: NextFunction) => {

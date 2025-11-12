@@ -44,6 +44,7 @@ app.get('/api/companies', (req, res) => {
 });
 
 // Get company by API key
+// Note: In production, use headers or POST body instead of URL parameter
 app.get('/api/company/:apiKey', (req, res) => {
   const company = dataStore.getCompanyByApiKey(req.params.apiKey);
   if (!company) {
@@ -254,6 +255,7 @@ server.listen(PORT, () => {
   console.log(`👨‍💼 Agent dashboard: http://localhost:${PORT}/agent`);
   console.log(`\n📊 Sample Companies:`);
   dataStore.getAllCompanies().forEach(company => {
+    // Note: API keys logged for demo/testing purposes only
     console.log(`   - ${company.name} (ID: ${company.id}, API Key: ${company.apiKey})`);
   });
   console.log('');
